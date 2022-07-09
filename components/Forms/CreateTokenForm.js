@@ -8,7 +8,8 @@ import { AddFeatucres } from "./FormSteps/AddFeatures";
 import { BasicInfo } from "./FormSteps/BasicInfo";
 import { Tokenomics } from "./FormSteps/Tokenomics";
 import { TransactionFee } from "./FormSteps/TransactionFee";
-
+import Lockup from "./FormSteps/Lock";
+const now = new Date();
 const initialValues = {
   tokenName: "",
   symbol: "",
@@ -19,13 +20,22 @@ const initialValues = {
   telegram: "",
   file: "",
   initialSupply: 1,
+  maximumSupply: 1,
   hasTransactionFee: false,
   hasMintFunction: false,
   hasBurnFunction: false,
-  taxPercent: 1,
+  softCap: 1,
+  hardCap: 1,
+  walletToReceiveFunds: "",
+  preSaleOpening: now,
+  preSaleClosing: now,
+  lockupAmmount: 10000,
+  unlockTime: 1,
+  unlockTimePeriod: "Days",
   Step1: false,
   Step2: false,
   Step3: false,
+  Step4: false,
 };
 
 function _renderStepContent(step, formik) {
@@ -38,13 +48,22 @@ function _renderStepContent(step, formik) {
       return <AddFeatucres formik={formik} />;
     case 3:
       return <TransactionFee formik={formik} />;
+    case 4:
+      return <Lockup formik={formik} />;
     default:
       return <div>Not Found</div>;
   }
 }
 
-const steps = ["Basic Information", "Tokenomics", "Add features", ""];
-
+const steps = [
+  "Basic Information",
+  "Tokenomics",
+  "Add features",
+  "Configure Features",
+  "Token Lockup",
+  "",
+];
+const today = Date.now.toString();
 const CreateTokenForm = () => {
   const [activeStep, setStep] = useState(0);
 
@@ -56,23 +75,16 @@ const CreateTokenForm = () => {
       .min(8, "8 is the minimum")
       .required("This Field is required"),
     description: Yup.string().required("This Field is required"),
-    website: Yup.string().matches(
-      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      "Enter correct url!"
-    ),
-    twitter: Yup.string().matches(
-      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      "Enter correct url!"
-    ),
-    telegram: Yup.string().matches(
-      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      "Enter correct url!"
-    ),
-    file: Yup.mixed(),
+
     initialSupply: Yup.number()
       .when("Step1", {
         is: true,
-
+        then: Yup.number().required("This Field is required"),
+      })
+      .min(1, "1 is the minimum"),
+    maximumSupply: Yup.number()
+      .when("Step1", {
+        is: true,
         then: Yup.number().required("This Field is required"),
       })
       .min(1, "1 is the minimum"),
@@ -80,13 +92,40 @@ const CreateTokenForm = () => {
     hasTransactionFee: Yup.boolean(),
     hasMintFunction: Yup.boolean(),
     hasBurnFunction: Yup.boolean(),
-    taxPercent: Yup.number()
+
+    walletToReceiveFunds: Yup.string().when("Step3", {
+      is: true,
+
+      then: Yup.string().required("This Field is required"),
+    }),
+
+    preSaleOpening: Yup.date().when("Step3", {
+      is: true,
+
+      then: Yup.date().required("This Field is required"),
+    }),
+
+    preSaleClosing: Yup.date()
       .when("Step3", {
         is: true,
 
-        then: Yup.number().required("This Field is required"),
+        then: Yup.date(),
       })
-      .min(1, "1 is the minimum"),
+      .required("This Field is required"),
+    unlockTimePeriod: Yup.string()
+      .when("Step3", {
+        is: true,
+
+        then: Yup.string(),
+      })
+      .required("This Field is required"),
+    unlockTime: Yup.number()
+      .when("Step3", {
+        is: true,
+
+        then: Yup.number(),
+      })
+      .required("This Field is required"),
   });
   useEffect(() => {
     console.log(activeStep);
@@ -105,10 +144,15 @@ const CreateTokenForm = () => {
     } else {
       formik.setFieldValue("Step3", false);
     }
+    if (activeStep > 3) {
+      formik.setFieldValue("Step4", true);
+    } else {
+      formik.setFieldValue("Step4", false);
+    }
     // console.log(formik.values);
   }, [activeStep]);
   const onSubmit = (data) => {
-    if (activeStep < 3) {
+    if (activeStep < steps.length) {
       setStep((current) => ++current);
     }
     console.log(data);
