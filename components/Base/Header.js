@@ -6,7 +6,7 @@ const Header = () => {
       <div className={style.innerContainer}>
         <Link href={"/"}>
           <a className={style.Header_logoLink}>
-            <img src="/logo.svg" />
+            <img src="/Logo.png" />
           </a>
         </Link>
 
