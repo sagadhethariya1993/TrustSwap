@@ -55,7 +55,7 @@ const Lockup = ({ formik }) => {
             <select
               id={"unlockTimePeriod"}
               name={"unlockTimePeriod"}
-              {...formik.getFieldProps("unlockTime")}
+              {...formik.getFieldProps("unlockTimePeriod")}
               className={formStyle.TextInput_container}
             >
               <option value="hours">hours</option>
