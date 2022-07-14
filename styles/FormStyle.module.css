@@ -20,6 +20,7 @@
 }
 .CreateCoinNav_stepIcon {
   display: flex;
+  color: #858585;
   width: 30px;
   height: 30px;
   align-items: center;
@@ -31,6 +32,7 @@
 .CreateCoinNav_stepChecked .CreateCoinNav_stepIcon {
   transition: background-color 0.25s ease-out 0.25s;
   background: #1ab675;
+  color: #fff;
 }
 .CreateCoinNav_stepChecked .stepimg,
 .CreateCoinNav_stepActive .stepimg {

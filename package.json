@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@unform/core": "^2.1.6",
     "@unform/web": "^2.1.6",
     "bootstrap": "^5.1.3",

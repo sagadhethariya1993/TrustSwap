@@ -9,6 +9,17 @@ import { BasicInfo } from "./FormSteps/BasicInfo";
 import { Tokenomics } from "./FormSteps/Tokenomics";
 import { TransactionFee } from "./FormSteps/TransactionFee";
 import Lockup from "./FormSteps/Lock";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPenToSquare,
+  faPieChart,
+  faBorderAll,
+  faBitcoinSign,
+  faCode,
+  faLock,
+} from "@fortawesome/free-solid-svg-icons";
+
 const now = new Date();
 const initialValues = {
   tokenName: "",
@@ -37,7 +48,6 @@ const initialValues = {
   Step3: false,
   Step4: false,
 };
-
 function _renderStepContent(step, formik) {
   switch (step) {
     case 0:
@@ -56,12 +66,12 @@ function _renderStepContent(step, formik) {
 }
 
 const steps = [
-  "Basic Information",
-  "Tokenomics",
-  "Add features",
-  "Configure Features",
-  "Token Lockup",
-  "",
+  { name: "Basic Information", icon: faPenToSquare },
+  { name: "Tokenomics", icon: faPieChart },
+  { name: "Add features", icon: faBorderAll },
+  { name: "Configure Features", icon: faCode },
+  { name: "Token Lockup", icon: faLock },
+  { name: "", icon: faBitcoinSign },
 ];
 const today = Date.now.toString();
 const CreateTokenForm = () => {
@@ -168,14 +178,14 @@ const CreateTokenForm = () => {
       <ul className={formStyle.CreateCoinNav_container}>
         {steps.map((stp, index) => (
           <li
-            key={stp + "step key"}
+            key={stp.name + "step key"}
             className={`${formStyle.CreateCoinNav_step} ${
               index < activeStep && formStyle.CreateCoinNav_stepChecked
             } ${index == activeStep && formStyle.CreateCoinNav_stepActive}`}
           >
             <div className={formStyle.CreateCoinNav_stepIcon}>
-              <img
-                src={`/svg/step${index + 1}.svg`}
+              <FontAwesomeIcon
+                icon={stp.icon}
                 className={index != 0 ? formStyle.stepimg : ""}
               />
             </div>
@@ -183,7 +193,9 @@ const CreateTokenForm = () => {
               <div className={formStyle.CreateCoinNav_stepNumber}>
                 Step {index + 1}/{steps.length}
               </div>
-              <div className={formStyle.CreateCoinNav_stepTitle}>{stp}</div>
+              <div className={formStyle.CreateCoinNav_stepTitle}>
+                {stp.name}
+              </div>
             </div>
           </li>
         ))}
